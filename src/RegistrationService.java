@@ -4,11 +4,13 @@ import ValidateUser.ValidatePassword;
 import ValidateUser.ValidateUsername;
 
 import java.util.Scanner;
-public class RegistrationService extends UserEmailCheck {
+public class RegistrationService{
     private DatabaseManager databaseManager;
+    private UserEmailCheck userEmailCheck;
 
-    public RegistrationService(DatabaseManager databaseManager) {
+    public RegistrationService(DatabaseManager databaseManager,UserEmailCheck userEmailCheck) {
         this.databaseManager = databaseManager;
+        this.userEmailCheck = userEmailCheck;
     }
 
     Scanner scanner = new Scanner(System.in);
@@ -19,7 +21,7 @@ public class RegistrationService extends UserEmailCheck {
             String username = scanner.nextLine();
             ValidateUsername.isValidUsername(username);
 
-            if (isUsernameInUse(username)) {
+            if (userEmailCheck.isUsernameInUse(username)) {
                 System.out.println("Username is already in use.");
                 return false;
             }
@@ -33,14 +35,13 @@ public class RegistrationService extends UserEmailCheck {
             String email = scanner.nextLine();
             ValidateEmail.isValidEmail(email);
 
-            //if (isEmailInUse(email)) {
-            //    System.out.println("Email is already in use.");
-            //    return false;
-            // }
-            DatabaseManager databaseManager = new DatabaseManager();
+            if (userEmailCheck.isEmailInUse(email)) {
+                System.out.println("Email is already in use.");
+                return false;
+             }
             databaseManager.insertUser(username, password, salt, email);
-
             System.out.println("Registration successful.");
+            databaseManager.closeConnection();
             return true;
         } catch (InvalidInputException e) {
             System.out.println("Invalid input: " + e.getMessage());
