@@ -2,19 +2,20 @@ public class User {
     private int UserID;
     private String userName;
     private String password;
+    private byte[] salt;
     private String email;
 
     private double balance;
     private int roleID;
-    private int shoppingCardID;
 
-    public User(String userName, String password, String email,int roleID,int shoppingCardID) {
+
+    public User(String userName, String password,byte[] salt,String email,int roleID) {
         this.userName = userName;
         this.password = password;
+        this.salt = salt;
         this.email = email;
-        this.balance = balance;
+        this.balance = 0;
         this.roleID = roleID;
-        this.shoppingCardID = 0;
     }
 
     public String getUserName() {
@@ -62,12 +63,12 @@ public class User {
         this.roleID = roleID;
     }
 
-    public int getShoppingCardID() {
-        return shoppingCardID;
+    public byte[] getSalt() {
+        return salt;
     }
 
-    public void setShoppingCardID(int shoppingCardID) {
-        this.shoppingCardID = shoppingCardID;
+    public void setSalt(byte[] salt) {
+        this.salt = salt;
     }
 }
 
