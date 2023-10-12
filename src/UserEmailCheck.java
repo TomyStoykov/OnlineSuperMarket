@@ -54,7 +54,7 @@ public class UserEmailCheck {
         try {
             connection = databaseManager.getConnection();
 
-            String sql = "SELECT COUNT(*) FROM User WHERE Username = ?";
+            String sql = "SELECT COUNT(*) FROM User WHERE Email = ?";
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(5, email);
             resultSet = preparedStatement.executeQuery();

@@ -3,6 +3,11 @@ import ValidateUser.ValidateEmail;
 import ValidateUser.ValidatePassword;
 import ValidateUser.ValidateUsername;
 
+import javax.xml.crypto.Data;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Scanner;
 public class RegistrationService{
     private DatabaseManager databaseManager;
@@ -51,4 +56,43 @@ public class RegistrationService{
             return false;
         }
     }
+
+    public boolean logIn(String usernameOrEmail, String password){
+            Connection connection = null;
+            PreparedStatement preparedStatement = null;
+            ResultSet resultSet = null;
+        try{
+            DatabaseManager databaseManager = new DatabaseManager();
+            connection = databaseManager.getConnection();
+
+            String sql = "SELECT COUNT(*) FROM User  WHERE user = ? OR email = ?";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(2,usernameOrEmail);
+            preparedStatement.setString(5,usernameOrEmail);
+            resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()){
+                String storedPassword = resultSet.getString("Password");
+                byte[] salt = resultSet.getBytes("Salt");
+                return PasswordHasher.verifyPassword(password,storedPassword,salt);
+            }
+
+        }catch (SQLException e){
+            e.printStackTrace();
+    } finally {
+            databaseManager.closeConnection();
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+        }
+    }return false;
+  }
 }
