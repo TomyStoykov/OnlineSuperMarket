@@ -70,5 +70,13 @@ public class User {
     public void setSalt(byte[] salt) {
         this.salt = salt;
     }
+
+    public boolean isAdminOrAdministrator(){
+        int adminRoleId = 1;
+        int administratorRoleId = 2;
+        int userRoleId = getRoleID();
+
+        return userRoleId == adminRoleId || userRoleId == administratorRoleId;
+    }
 }
 
