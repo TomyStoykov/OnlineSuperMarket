@@ -21,8 +21,8 @@ public class Functionalities {
                 preparedStatement.setInt(1, productId);
                 int rowsAffected = preparedStatement.executeUpdate();
                 preparedStatement.close();
-
                 if (rowsAffected > 0) {
+
                     System.out.println("Product removed successfully.");
                     return true;
                 } else {
@@ -38,6 +38,35 @@ public class Functionalities {
             System.out.println("Permission denied. User does not have sufficient privileges.");
         }
 
+        return false;
+    }
+    public boolean addProduct(Product product){
+        if(user.isAdminOrAdministrator()){
+            try{
+                Connection connection = databaseManager.getConnection();
+                String addProductSQL = "INSERT INTO Products (Name,Category,Price,Description, DiscountID)" + "VALUES (?,?,?,?,?)";
+                PreparedStatement preparedStatement = connection.prepareStatement(addProductSQL);
+                preparedStatement.setString(2,product.getProduct());
+                preparedStatement.setString(3,product.getCategory());
+                preparedStatement.setDouble(4,product.getPrice());
+                preparedStatement.setString(5,product.getDescription());
+                int rowsAffected = preparedStatement.executeUpdate();
+                preparedStatement.close();
+                if(rowsAffected > 0){
+                    System.out.println("Product added successfully.");
+                    return true;
+                }else{
+                    System.out.println("Problem with adding the product.");
+                }
+            }catch (SQLException e){
+                e.printStackTrace();
+                System.out.println("An error has accrued during the product addition in the database.");
+            }finally {
+                databaseManager.closeConnection();
+            }
+        }else {
+            System.out.println("Permission denied. User does not have sufficient privileges.");
+        }
         return false;
     }
 }
